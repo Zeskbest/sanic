@@ -26,7 +26,7 @@ from sanic.websocket import WebSocketProtocol, ConnectionClosed
 class Sanic:
 
     def __init__(self, name=None, router=None, error_handler=None,
-                 load_env=True, request_class=None):
+                 load_env=True, request_class=None, websocket_protocol=WebSocketProtocol):
         # Only set up a default log handler if the
         # end-user application didn't set anything up.
         if not logging.root.handlers and log.level == logging.NOTSET:
@@ -57,6 +57,7 @@ class Sanic:
         self.is_running = False
         self.websocket_enabled = False
         self.websocket_tasks = []
+        self.websocket_protocol = websocket_protocol
 
         # Register alternative method names
         self.go_fast = self.run
@@ -541,7 +542,7 @@ class Sanic:
         :return: Nothing
         """
         if protocol is None:
-            protocol = (WebSocketProtocol if self.websocket_enabled
+            protocol = (self.websocket_protocol if self.websocket_enabled
                         else HttpProtocol)
         if stop_event is not None:
             if debug:
@@ -587,7 +588,7 @@ class Sanic:
               way to run a Sanic application.
         """
         if protocol is None:
-            protocol = (WebSocketProtocol if self.websocket_enabled
+            protocol = (self.websocket_protocol if self.websocket_enabled
                         else HttpProtocol)
         if stop_event is not None:
             if debug:

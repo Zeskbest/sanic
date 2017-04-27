@@ -350,7 +350,7 @@ def serve(host, port, request_handler, error_handler, before_start=None,
     :param request_class: Request class to use
     :return: Nothing
     """
-    if not run_async:
+    if loop is None and not run_async:
         loop = async_loop.new_event_loop()
         asyncio.set_event_loop(loop)
 
